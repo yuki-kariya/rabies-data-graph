@@ -6,6 +6,7 @@ const BundleAnalyzerPlugin =
 //        .envファイルに定義されたものだけ展開したので、EnvironmentPluginを使用
 // const Dotenv = require('dotenv-webpack')
 require('dotenv').config()
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const config = {
   entry: {
@@ -14,13 +15,20 @@ const config = {
   mode: 'development',
   output: {
     asyncChunks: true,
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   module: {
     rules: [
+      // todo: add eslint-webpack-loader
       {
         test: /\.tsx?/,
         loader: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
@@ -30,6 +38,7 @@ const config = {
   plugins: [
     new BundleAnalyzerPlugin({ analyzerMode: 'static' }),
     new webpack.EnvironmentPlugin(['MODE', 'API_HOST']),
+    new HtmlWebpackPlugin({ template: './src/index.html' }),
   ],
 }
 
